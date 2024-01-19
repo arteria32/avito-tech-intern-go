@@ -2,17 +2,18 @@ package services
 
 import (
 	"fmt"
+	. "main/models"
 	"main/queries"
 )
 
 type AccountsService struct {
-	dbDeep *queries.Postgres
+	repo queries.AccountsRepo
 }
 
-func (service *AccountsService) GetAccoundByUserId(userId string) {
+func (service *AccountsService) GetAccoundByUserId(userId string) (User, error) {
 	fmt.Println("userId", userId)
-	service.dbDeep.FindRowByProrFromTable("user_id", userId, "accounts")
+	return service.repo.GetUserById(userId)
 }
-func NewAccountService(dbDeep *queries.Postgres) AccountsService {
+func NewAccountService(dbDeep queries.AccountsRepo) AccountsService {
 	return AccountsService{dbDeep}
 }

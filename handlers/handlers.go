@@ -27,8 +27,12 @@ func HandlerAccounts(wr http.ResponseWriter,
 		{
 			idAccount := vars["id"]
 			log.Println(idAccount)
-			service.GetAccoundByUserId(idAccount)
-			jsonResponse, _ := json.Marshal(nil)
+			result, err := service.GetAccoundByUserId(idAccount)
+			if err != nil {
+				http.Error(wr, "Not found", http.StatusNoContent)
+				return
+			}
+			jsonResponse, _ := json.Marshal(result)
 			wr.WriteHeader(http.StatusOK)
 			wr.Write(jsonResponse)
 		}
@@ -43,4 +47,30 @@ func HandlerAccounts(wr http.ResponseWriter,
 	log.Println(req.URL)    // request URL
 	log.Println(req.Header) // request headers
 	log.Println(req.Body)   // request body)
+}
+func HandlerAccountsBalance(wr http.ResponseWriter,
+	req *http.Request,
+	service services.AccountsService) {
+	vars := mux.Vars(req)
+	switch req.Method {
+	case "GET":
+		{
+			idAccount := vars["id"]
+			log.Println(idAccount)
+			result, err := service.GetAccoundByUserId(idAccount)
+			if err != nil {
+				http.Error(wr, "Not found", http.StatusNoContent)
+				return
+			}
+			jsonResponse, _ := json.Marshal(result.RealAccount)
+			wr.WriteHeader(http.StatusOK)
+			wr.Write(jsonResponse)
+		}
+	default:
+		{
+			http.Error(wr, "Not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+	}
+
 }

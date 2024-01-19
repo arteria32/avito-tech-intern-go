@@ -39,8 +39,10 @@ func main() {
 	}
 	defer pg.Close()
 	log.Println(pg)
+	/* Инициализация репов */
+	accRepo := queries.NewAccountsRepo(pg)
 	/* Сервисы */
-	accountService := services.NewAccountService(pg)
+	accountService := services.NewAccountService(accRepo)
 	/*  */
 	/* Ручки */
 	/* Проверка работоспособности */
@@ -52,6 +54,9 @@ func main() {
 	/* 3. Cписание  средств PUT */
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
 	/* 4.  Получение баланса GET */
+	router.HandleFunc("/AccountsBalance/{id}", func(w http.ResponseWriter, r *http.Request) {
+		handlers.HandlerAccountsBalance(w, r, accountService)
+	})
 	router.HandleFunc("/Accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.HandlerAccounts(w, r, accountService)
 	})
