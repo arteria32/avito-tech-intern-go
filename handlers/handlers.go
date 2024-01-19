@@ -66,6 +66,26 @@ func HandlerAccountsBalance(wr http.ResponseWriter,
 			wr.WriteHeader(http.StatusOK)
 			wr.Write(jsonResponse)
 		}
+	case "POST":
+		{
+			log.Printf("post")
+			idAccount := vars["id"]
+			log.Println(idAccount)
+			var money float64
+			err := json.NewDecoder(req.Body).Decode(&money)
+			if err != nil {
+				http.Error(wr, "StatusBadRequest", http.StatusBadRequest)
+				return
+			}
+			result, err := service.UpdateBalanceAccount(idAccount, money)
+			if err != nil {
+				http.Error(wr, "Not found", http.StatusNoContent)
+				return
+			}
+			jsonResponse, _ := json.Marshal(result.RealAccount)
+			wr.WriteHeader(http.StatusOK)
+			wr.Write(jsonResponse)
+		}
 	default:
 		{
 			http.Error(wr, "Not allowed", http.StatusMethodNotAllowed)
