@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	. "main/models"
 	"main/services"
 	"net/http"
 
@@ -83,6 +84,39 @@ func HandlerAccountsBalance(wr http.ResponseWriter,
 				return
 			}
 			jsonResponse, _ := json.Marshal(result.RealAccount)
+			wr.WriteHeader(http.StatusOK)
+			wr.Write(jsonResponse)
+		}
+	default:
+		{
+			http.Error(wr, "Not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+	}
+
+}
+func HandlerOperations(wr http.ResponseWriter,
+	req *http.Request,
+	service services.OperationsService) {
+	vars := mux.Vars(req)
+	switch req.Method {
+	case "POST":
+		{
+			log.Printf("post")
+			idAccount := vars["id"]
+			log.Println(idAccount)
+			var newOperation Operation
+			err := json.NewDecoder(req.Body).Decode(&newOperation)
+			if err != nil {
+				http.Error(wr, "StatusBadRequest", http.StatusBadRequest)
+				return
+			}
+			res, err := service.AddNewOperation(newOperation)
+			if err != nil {
+				http.Error(wr, "Bad Request", http.StatusBadRequest)
+				return
+			}
+			jsonResponse, _ := json.Marshal(res)
 			wr.WriteHeader(http.StatusOK)
 			wr.Write(jsonResponse)
 		}

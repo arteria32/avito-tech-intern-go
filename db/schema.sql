@@ -6,12 +6,11 @@ CREATE TABLE billing_service.accounts (
     real_account numeric DEFAULT 0 CHECK (real_account >= 0),
     reserving_account numeric DEFAULT 0 CHECK (
         (reserving_account >= 0 )
-        AND (reserving_account <= real_account)
     )
 );
 
 CREATE TABLE billing_service.operations (
-    id INT PRIMARY KEY,
+    id INT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cost money,
     account_id INT REFERENCES billing_service.accounts(id),
     service_id serial,

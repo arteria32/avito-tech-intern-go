@@ -21,6 +21,18 @@ func (repo *AccountsRepo) GetUserByName(name string) (User, error) {
 	fmt.Println(user)
 	return user, nil
 }
+func (repo *AccountsRepo) GetUserById(id int) (User, error) {
+	queryStr := fmt.Sprintf("SELECT * FROM billing_service.accounts WHERE id ='%d'", id)
+	var user User
+	// Executing query for single row
+	if err := repo.db.QueryRow(context.Background(), queryStr).Scan(&user.Id, &user.UserId, &user.RealAccount, &user.ReservingAccount); err != nil {
+		fmt.Println("Error occur while finding user: ", err)
+		return user, ErrNotFound
+	}
+	fmt.Println(user)
+	return user, nil
+}
+
 func (repo *AccountsRepo) UpdateExistingUser(newInstance User) (User, error) {
 	queryStr := fmt.Sprintf("UPDATE billing_service.accounts SET real_account=%f,reserving_account=%f WHERE id =%d", newInstance.RealAccount, newInstance.ReservingAccount, newInstance.Id)
 	var user User

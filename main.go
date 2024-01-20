@@ -41,22 +41,32 @@ func main() {
 	log.Println(pg)
 	/* Инициализация репов */
 	accRepo := queries.NewAccountsRepo(pg)
+	operRepo := queries.NewOperationsRepo(pg)
+
 	/* Сервисы */
 	accountService := services.NewAccountService(accRepo)
+	operService := services.NewOperationService(accRepo, operRepo)
+
 	/*  */
 	/* Ручки */
 	/* Проверка работоспособности */
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
 	/* 1. Начисление денег на счет */
-	router.HandleFunc("/AddMoneyToAccount", handlers.HandlerGetHelloWorld)
-	/* 2. Резервирование средств POST */
-	router.HandleFunc("/Operations", handlers.HandlerGetHelloWorld)
-	/* 3. Cписание  средств PUT */
-	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
-	/* 4.  Получение баланса GET */
 	router.HandleFunc("/AccountsBalance/{id}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.HandlerAccountsBalance(w, r, accountService)
 	})
+	/* 2. Резервирование средств POST */
+	router.HandleFunc("/Operations", func(w http.ResponseWriter, r *http.Request) {
+		handlers.HandlerOperations(w, r, operService)
+	})
+	/* 3. Cписание  средств PUT */
+	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
+	/* 4.  Получение баланса GET */
+	/* 4.1. Получение инфомрации о кол-ве денег на счете  */
+	router.HandleFunc("/AccountsBalance/{id}", func(w http.ResponseWriter, r *http.Request) {
+		handlers.HandlerAccountsBalance(w, r, accountService)
+	})
+	/* 4.2. Получение полной инфомрации о счете  */
 	router.HandleFunc("/Accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.HandlerAccounts(w, r, accountService)
 	})
