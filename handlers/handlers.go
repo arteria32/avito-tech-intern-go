@@ -120,6 +120,26 @@ func HandlerOperations(wr http.ResponseWriter,
 			wr.WriteHeader(http.StatusOK)
 			wr.Write(jsonResponse)
 		}
+	case "PUT":
+		{
+			log.Printf("post")
+			idAccount := vars["id"]
+			log.Println(idAccount)
+			var newOperation Operation
+			err := json.NewDecoder(req.Body).Decode(&newOperation)
+			if err != nil {
+				http.Error(wr, "StatusBadRequest", http.StatusBadRequest)
+				return
+			}
+			res, err := service.UpdateOperationStatus(newOperation)
+			if err != nil {
+				http.Error(wr, "Bad Request", http.StatusBadRequest)
+				return
+			}
+			jsonResponse, _ := json.Marshal(res)
+			wr.WriteHeader(http.StatusOK)
+			wr.Write(jsonResponse)
+		}
 	default:
 		{
 			http.Error(wr, "Not allowed", http.StatusMethodNotAllowed)

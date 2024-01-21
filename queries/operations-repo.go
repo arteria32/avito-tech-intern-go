@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	. "main/models"
+	"time"
 )
 
 type OperataionsRepo struct {
@@ -25,6 +26,34 @@ func (repo *OperataionsRepo) AddNewOperation(newInstance Operation) (Operation, 
 	fmt.Print(res)
 	return newInstance, nil
 }
+
+func (repo *OperataionsRepo) GetOperationById(id int) (Operation, error) {
+	queryStr := fmt.Sprintf("SELECT * FROM billing_service.operations WHERE id ='%d'", id)
+	var operation Operation
+
+	var creatingTime time.Time
+	var updatingTime time.Time
+	if err := repo.db.QueryRow(context.Background(), queryStr).Scan(&operation.Id, &operation.Cost, &operation.AccountId, &operation.ServiceId, &operation.HealthStatus, &creatingTime, &updatingTime); err != nil {
+		fmt.Println("Error OperationById: ", err)
+		return operation, ErrNotFound
+	}
+	operation.CreationDate = creatingTime.String()
+	operation.UpdateDate = updatingTime.String()
+	fmt.Println(operation)
+	return operation, nil
+}
+
+func (repo *OperataionsRepo) UpdateExistingOperation(newState Operation) (Operation, error) {
+	queryStr := fmt.Sprintf("UPDATE billing_service.operations SET health_status=%d,update_date='%s' WHERE id =%d", newState.HealthStatus, newState.UpdateDate, newState.Id)
+	var operation Operation
+	_, err := repo.db.Exec(context.Background(), queryStr)
+	if err != nil {
+		fmt.Println("Error OperationById: ", err)
+		return operation, ErrNotFound
+	}
+	return newState, nil
+}
+
 func NewOperationsRepo(pg *Postgres) OperataionsRepo {
 	return OperataionsRepo{pg}
 }

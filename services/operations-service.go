@@ -9,7 +9,10 @@ import (
 )
 
 var (
-	ErrorNotEnoughMoney = errors.New("not enough money on account")
+	ErrorNotEnoughMoney          = errors.New("not enough money on account")
+	ErrorNotEnoughReservingMoney = errors.New("not enough money on reserving account")
+	ErrorFaledOperation          = errors.New("operation has alrady failed")
+	ErrorApprovedOperation       = errors.New("operation has alrady approved")
 )
 
 type OperationsService struct {
@@ -47,6 +50,48 @@ func (service *OperationsService) AddNewOperation(newBody Operation) (User, erro
 	}
 	return newAccountState, nil
 }
+
+func (service *OperationsService) UpdateOperationStatus(newBody Operation) (User, error) {
+	fmt.Println("newBody", newBody)
+	userId := newBody.AccountId
+	operationId := newBody.Id
+
+	curAccountState, errAcc := service.accountsRepo.GetUserById(userId)
+	fmt.Println(curAccountState)
+	if errAcc != nil {
+		return curAccountState, errAcc
+	}
+	curOperationState, errOp := service.operationsRepo.GetOperationById(operationId)
+	fmt.Println(curOperationState)
+	if errOp != nil {
+		return curAccountState, errOp
+	}
+	if curOperationState.HealthStatus == FailedStatus {
+		return curAccountState, ErrorFaledOperation
+
+	}
+	if curOperationState.HealthStatus == ApprovedStatus {
+		return curAccountState, ErrorApprovedOperation
+
+	}
+	if curAccountState.ReservingAccount < curOperationState.Cost {
+		return curAccountState, ErrorNotEnoughReservingMoney
+	}
+	curAccountState.ReservingAccount = curAccountState.ReservingAccount - curOperationState.Cost
+	curOperationState.HealthStatus = ApprovedStatus
+	newAccountState, updatingError := service.accountsRepo.UpdateExistingUser(curAccountState)
+	if updatingError != nil {
+		return newAccountState, errAcc
+	}
+	updatingTime := time.Now().UTC().Format(time.RFC3339Nano)
+	curOperationState.UpdateDate = updatingTime
+	_, errUpdating := service.operationsRepo.UpdateExistingOperation(curOperationState)
+	if errUpdating != nil {
+		return curAccountState, errUpdating
+	}
+	return newAccountState, nil
+}
+
 func NewOperationService(dbAccounts queries.AccountsRepo, dbOperations queries.OperataionsRepo) OperationsService {
 	newOperService := OperationsService{
 		operationsRepo: dbOperations,
