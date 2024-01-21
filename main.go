@@ -56,10 +56,10 @@ func main() {
 		handlers.HandlerAccountsBalance(w, r, accountService)
 	})
 	/* 2. Резервирование средств POST */
+	/* 3. Cписание  средств PUT */
 	router.HandleFunc("/Operations", func(w http.ResponseWriter, r *http.Request) {
 		handlers.HandlerOperations(w, r, operService)
 	})
-	/* 3. Cписание  средств PUT */
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
 	/* 4.  Получение баланса GET */
 	/* 4.1. Получение инфомрации о кол-ве денег на счете  */
