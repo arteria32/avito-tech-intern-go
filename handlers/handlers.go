@@ -19,6 +19,19 @@ func HandlerGetHelloWorld(wr http.ResponseWriter,
 	log.Println(req.Header) // request headers
 	log.Println(req.Body)   // request body)
 }
+
+// HandlerAccounts godoc
+// @Summary      AccountsInfo
+// @Description  get Account Info by id
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      200  {object}  User
+// @Failure      400  {object}  error
+// @Failure      404  {object}  error
+// @Failure      500  {object}  error
+// @Router       /Accounts/{id} [get]
 func HandlerAccounts(wr http.ResponseWriter,
 	req *http.Request,
 	service services.AccountsService) {
@@ -49,6 +62,19 @@ func HandlerAccounts(wr http.ResponseWriter,
 	log.Println(req.Header) // request headers
 	log.Println(req.Body)   // request body)
 }
+
+// HandlerBalance godoc
+// @Summary      BalanceInfo
+// @Description  get Balance Info by id
+// @Tags         Balance
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      200  {object}  User
+// @Failure      400  {object}  error
+// @Failure      404  {object}  error
+// @Failure      500  {object}  error
+// @Router       /AccountsBalance/{id} [get]
 func HandlerAccountsBalance(wr http.ResponseWriter,
 	req *http.Request,
 	service services.AccountsService) {
@@ -95,6 +121,18 @@ func HandlerAccountsBalance(wr http.ResponseWriter,
 	}
 
 }
+
+// HandlerBalance godoc
+// @Summary      Operations
+// @Description  Create New Operation
+// @Tags         Operations
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  Operation
+// @Failure      400  {object}  error
+// @Failure      404  {object}  error
+// @Failure      500  {object}  error
+// @Router       /Operations [post]
 func HandlerOperations(wr http.ResponseWriter,
 	req *http.Request,
 	service services.OperationsService) {

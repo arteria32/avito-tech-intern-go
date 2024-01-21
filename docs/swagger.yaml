@@ -1,0 +1,141 @@
+basePath: /
+definitions:
+  models.HealthStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - PendingStatus
+    - ApprovedStatus
+    - FailedStatus
+  models.Operation:
+    properties:
+      accountId:
+        type: integer
+      cost:
+        type: number
+      creationDate:
+        type: string
+      healthStatus:
+        $ref: '#/definitions/models.HealthStatus'
+      id:
+        type: integer
+      serviceId:
+        type: integer
+      updateDate:
+        type: string
+    type: object
+  models.User:
+    properties:
+      id:
+        type: integer
+      realAccount:
+        type: number
+      reservingAccount:
+        type: number
+      userId:
+        type: string
+    type: object
+host: localhost
+info:
+  contact:
+    email: xx@gmail.com
+    name: API Support
+  description: Biling Service for Avito
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Billing Service
+  version: "1.0"
+paths:
+  /Accounts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get Account Info by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: AccountsInfo
+      tags:
+      - Accounts
+  /AccountsBalance/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get Balance Info by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: BalanceInfo
+      tags:
+      - Balance
+  /Operations:
+    post:
+      consumes:
+      - application/json
+      description: Create New Operation
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Operation'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Operations
+      tags:
+      - Operations
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

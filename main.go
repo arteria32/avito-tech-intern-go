@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	_ "main/docs"
 	"main/handlers"
 	"main/queries"
 	"main/services"
@@ -20,6 +21,17 @@ const (
 	dbname   = "postgres"
 )
 
+// @title Billing Service
+// @version 1.0
+// @description Biling Service for Avito
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.email xx@gmail.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost
+// @BasePath /
+// @securityDefinitions.basic BasicAuth
 func main() {
 	log.Println("Server starts")
 	router := mux.NewRouter()
@@ -29,6 +41,8 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+	/* 	router.PathPrefix("/").Handler(httpSwagger.WrapHandler)
+	 */
 	/* Иницилаизация базы */
 	connStr := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
