@@ -67,23 +67,26 @@ func main() {
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
 	/* 1. Начисление денег на счет */
 	router.HandleFunc("/AccountsBalance/{id}", func(w http.ResponseWriter, r *http.Request) {
-		handlers.HandlerAccountsBalance(w, r, accountService)
-	})
+		handlers.HandlerPostAccountsBalance(w, r, accountService)
+	}).Methods("POST")
 	/* 2. Резервирование средств POST */
+	router.HandleFunc("/Operations", func(w http.ResponseWriter, r *http.Request) {
+		handlers.HandlerPostOperation(w, r, operService)
+	}).Methods("POST")
 	/* 3. Cписание  средств PUT */
 	router.HandleFunc("/Operations", func(w http.ResponseWriter, r *http.Request) {
-		handlers.HandlerOperations(w, r, operService)
-	})
+		handlers.HandlerPutOperation(w, r, operService)
+	}).Methods("PUT")
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
 	/* 4.  Получение баланса GET */
 	/* 4.1. Получение инфомрации о кол-ве денег на счете  */
 	router.HandleFunc("/AccountsBalance/{id}", func(w http.ResponseWriter, r *http.Request) {
-		handlers.HandlerAccountsBalance(w, r, accountService)
-	})
+		handlers.HandlerGetAccountsBalance(w, r, accountService)
+	}).Methods("GET")
 	/* 4.2. Получение полной инфомрации о счете  */
 	router.HandleFunc("/Accounts/{id}", func(w http.ResponseWriter, r *http.Request) {
-		handlers.HandlerAccounts(w, r, accountService)
-	})
+		handlers.HandlerGetAccounts(w, r, accountService)
+	}).Methods("GET")
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Fatalln("Couldnt ListenAndServe()", err)

@@ -111,8 +111,60 @@ paths:
       summary: BalanceInfo
       tags:
       - Balance
+    post:
+      consumes:
+      - application/json
+      description: update Balance
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: BalanceInfo
+      tags:
+      - Balance
   /Operations:
     post:
+      consumes:
+      - application/json
+      description: Create New Operation
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Operation'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Operations
+      tags:
+      - Operations
+    put:
       consumes:
       - application/json
       description: Create New Operation
